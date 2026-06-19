@@ -1,0 +1,133 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      UserRole @default(ADMIN)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id          String @id @default(cuid())
+  name        String
+  slug        String @unique
+  image       String?
+  description String?
+
+  books       Book[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Book {
+  id          String @id @default(cuid())
+  title       String
+  slug        String @unique
+  author      String
+  isbn        String?
+  description String @db.Text
+
+  price       Float
+  salePrice   Float?
+
+  stock       Int @default(0)
+
+  image       String?
+
+  featured    Boolean @default(false)
+  bestseller  Boolean @default(false)
+
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+
+  orderItems  OrderItem[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Order {
+  id             String @id @default(cuid())
+
+  orderNumber    String @unique
+
+  customerName   String
+  customerEmail  String
+  customerPhone  String
+
+  address        String @db.Text
+
+  subtotal       Float
+  shipping       Float @default(0)
+  total          Float
+
+  paymentStatus  PaymentStatus @default(PENDING)
+  orderStatus    OrderStatus @default(PENDING)
+
+  items          OrderItem[]
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model OrderItem {
+  id         String @id @default(cuid())
+
+  orderId    String
+  bookId     String
+
+  quantity   Int
+  price      Float
+
+  order      Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  book       Book @relation(fields: [bookId], references: [id])
+
+  createdAt  DateTime @default(now())
+}
+
+model StoreSettings {
+  id          String @id @default(cuid())
+
+  storeName   String
+  logo        String?
+
+  email       String?
+  phone       String?
+
+  address     String? @db.Text
+
+  bannerImage String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
