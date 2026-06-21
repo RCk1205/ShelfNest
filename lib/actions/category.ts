@@ -55,3 +55,28 @@ export async function toggleCategoryStatus(
     },
   });
 }
+export async function getCategoryById(id: string) {
+  return await prisma.category.findUnique({
+    where: {
+      id,
+    },
+  });
+}
+export async function updateCategory(
+  id: string,
+  formData: {
+    name: string;
+    slug: string;
+    description?: string;
+    isActive: boolean;
+  }
+) {
+  const validated = categorySchema.parse(formData);
+
+  return await prisma.category.update({
+    where: {
+      id,
+    },
+    data: validated,
+  });
+}

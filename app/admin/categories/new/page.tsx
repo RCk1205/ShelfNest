@@ -11,7 +11,7 @@ export default async function NewCategoryPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#D6EBF3] p-8">
+    <div>
       <div className="max-w-3xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
           New Category
@@ -23,6 +23,6 @@ export default async function NewCategoryPage() {
 
         <CategoryForm />
       </div>
-    </main>
+    </div>
   );
 }

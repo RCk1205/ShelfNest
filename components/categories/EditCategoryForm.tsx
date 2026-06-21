@@ -1,16 +1,29 @@
 "use client";
 
 import { useState } from "react";
-import { createCategory } from "@/lib/actions/category";
-import { useRouter } from "next/navigation";
+import { updateCategory } from "@/lib/actions/category";
 
-export default function CategoryForm() {
-  const router = useRouter();
+type Props = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  isActive: boolean;
+};
 
-  const [name, setName] = useState("");
-  const [slug, setSlug] = useState("");
-  const [description, setDescription] = useState("");
-  const [isActive, setIsActive] = useState(true);
+export default function EditCategoryForm({
+  id,
+  name: initialName,
+  slug: initialSlug,
+  description: initialDescription,
+  isActive: initialActive,
+}: Props) {
+  const [name, setName] = useState(initialName);
+  const [slug, setSlug] = useState(initialSlug);
+  const [description, setDescription] = useState(
+    initialDescription || ""
+  );
+  const [isActive, setIsActive] = useState(initialActive);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -24,15 +37,14 @@ export default function CategoryForm() {
       setLoading(true);
       setError("");
 
-      await createCategory({
+      await updateCategory(id, {
         name,
         slug,
         description,
         isActive,
       });
 
-      router.push("/admin/categories");
-      router.refresh();
+      window.location.href = "/admin/categories";
     } catch (err) {
       setError(
         err instanceof Error
@@ -58,19 +70,17 @@ export default function CategoryForm() {
           type="text"
           value={name}
           onChange={(e) => {
-  const value = e.target.value;
+            const value = e.target.value;
 
-  setName(value);
+            setName(value);
 
-  setSlug(
-    value
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-  );
-}}
+            setSlug(
+              value
+                .toLowerCase()
+                .replace(/\s+/g, "-")
+            );
+          }}
           className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-900"
-          placeholder="Fiction"
-          required
         />
       </div>
 
@@ -80,11 +90,11 @@ export default function CategoryForm() {
         </label>
 
         <input
-  type="text"
-  value={slug}
-  readOnly
-  className="w-full border border-gray-300 rounded-lg px-4 py-3 bg-gray-50 text-gray-900"
-/>
+          type="text"
+          value={slug}
+          readOnly
+          className="w-full border border-gray-300 rounded-lg px-4 py-3 bg-gray-50 text-gray-900"
+        />
       </div>
 
       <div>
@@ -93,13 +103,12 @@ export default function CategoryForm() {
         </label>
 
         <textarea
+          rows={4}
           value={description}
           onChange={(e) =>
             setDescription(e.target.value)
           }
-          rows={4}
           className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-900"
-          placeholder="Books belonging to the fiction category"
         />
       </div>
 
@@ -113,8 +122,8 @@ export default function CategoryForm() {
         />
 
         <label className="text-gray-800 font-medium">
-  Active Category
-</label>
+          Active Category
+        </label>
       </div>
 
       {error && (
@@ -126,9 +135,11 @@ export default function CategoryForm() {
       <button
         type="submit"
         disabled={loading}
-        className="px-6 py-3 rounded-lg text-white bg-[#447F98] hover:bg-[#2F657C] hover:bg-[#447F98]"
+        className="px-6 py-3 rounded-lg bg-[#447F98] hover:bg-[#2F657C] text-white"
       >
-        {loading ? "Saving..." : "Create Category"}
+        {loading
+          ? "Updating..."
+          : "Update Category"}
       </button>
     </form>
   );

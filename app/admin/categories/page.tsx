@@ -12,7 +12,7 @@ if (!session) {
   const categories = await getCategories();
 
   return (
-    <main className="min-h-screen bg-gray-50 p-8">
+    <div>
       <div className="max-w-6xl mx-auto">
 
         <div className="flex items-center justify-between mb-8">
@@ -28,7 +28,7 @@ if (!session) {
 
   <a
     href="/admin/categories/new"
-    className="px-4 py-2 rounded-lg text-white bg-[#629BB6] hover:bg-[#447F98]"
+    className="px-4 py-2 rounded-lg text-white bg-[#447F98] hover:bg-[#2F657C] hover:bg-[#447F98]"
   >
     Add Category
   </a>
@@ -37,11 +37,23 @@ if (!session) {
         <div className="bg-white rounded-xl border overflow-hidden">
           <table className="w-full">
             <thead>
-              <tr className="border-b bg-gray-50">
-                <th className="text-left p-4 text-gray-900 font-semibold">Name</th>
-                <th className="text-left p-4 text-gray-900 font-semibold">Slug</th>
-                <th className="text-left p-4 text-gray-900 font-semibold">Status</th>
-              </tr>
+             <tr className="border-b bg-[#EAF4F8]">
+  <th className="text-left p-4 text-gray-900 font-semibold">
+    Name
+  </th>
+
+  <th className="text-left p-4 text-gray-900 font-semibold">
+    Slug
+  </th>
+
+  <th className="text-left p-4 text-gray-900 font-semibold">
+    Status
+  </th>
+
+  <th className="text-left p-4 text-gray-900 font-semibold">
+    Actions
+  </th>
+</tr>
             </thead>
 
             <tbody>
@@ -58,18 +70,37 @@ if (!session) {
                     {category.slug}
                   </td>
 
-                  <td className="p-4 text-gray-800">
-                    {category.isActive
-                      ? "Active"
-                      : "Inactive"}
-                  </td>
+                 <td className="p-4 text-gray-800">
+  {category.isActive
+    ? "Active"
+    : "Inactive"}
+</td>
+
+<td className="p-4">
+  <div className="flex gap-2">
+
+   <a
+  href={`/admin/categories/edit/${category.id}`}
+  className="px-3 py-1 rounded bg-[#447F98] hover:bg-[#2F657C] text-white"
+>
+  Edit
+</a>
+
+    <button
+      className="px-3 py-1 rounded bg-red-500 text-white"
+    >
+      Delete
+    </button>
+
+  </div>
+</td>
                 </tr>
               ))}
 
               {categories.length === 0 && (
                 <tr>
                   <td
-                    colSpan={3}
+                    colSpan={4}
                     className="p-8 text-center text-gray-700"
                   >
                     No categories found
@@ -81,6 +112,6 @@ if (!session) {
         </div>
 
       </div>
-    </main>
+    </div>
   );
 }
