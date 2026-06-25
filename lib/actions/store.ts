@@ -8,7 +8,6 @@ export async function getStoreSettings() {
 
   return settings;
 }
-
 export async function saveStoreSettings(
   formData: {
     storeName: string;
@@ -17,6 +16,13 @@ export async function saveStoreSettings(
     phone?: string;
     address?: string;
     bannerImage?: string;
+
+    enableCOD: boolean;
+    enableUPI: boolean;
+    enableCard: boolean;
+    enableNetBanking: boolean;
+
+    razorpayEnabled: boolean;
   }
 ) {
   const existing =
@@ -27,11 +33,65 @@ export async function saveStoreSettings(
       where: {
         id: existing.id,
       },
-      data: formData,
+      data: {
+        storeName: formData.storeName,
+        logo: formData.logo,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        bannerImage: formData.bannerImage,
+
+        enableCOD: formData.enableCOD,
+        enableUPI: formData.enableUPI,
+        enableCard: formData.enableCard,
+        enableNetBanking:
+          formData.enableNetBanking,
+
+        razorpayEnabled:
+          formData.razorpayEnabled,
+      },
     });
   }
 
   return prisma.storeSettings.create({
-    data: formData,
+    data: {
+      storeName: formData.storeName,
+      logo: formData.logo,
+      email: formData.email,
+      phone: formData.phone,
+      address: formData.address,
+      bannerImage: formData.bannerImage,
+
+      enableCOD: formData.enableCOD,
+      enableUPI: formData.enableUPI,
+      enableCard: formData.enableCard,
+      enableNetBanking:
+        formData.enableNetBanking,
+
+      razorpayEnabled:
+        formData.razorpayEnabled,
+    },
   });
+}
+export async function getPaymentSettings() {
+  const settings =
+    await prisma.storeSettings.findFirst();
+
+  return {
+    enableCOD:
+      settings?.enableCOD ?? true,
+
+    enableUPI:
+      settings?.enableUPI ?? false,
+
+    enableCard:
+      settings?.enableCard ?? false,
+
+    enableNetBanking:
+      settings?.enableNetBanking ?? false,
+
+    razorpayEnabled:
+      settings?.razorpayEnabled ??
+      false,
+  };
 }

@@ -100,7 +100,7 @@ if (!session) {
               {categories.length === 0 && (
                 <tr>
                   <td
-                    colSpan={4}
+                    colSpan={6}
                     className="p-8 text-center text-gray-700"
                   >
                     No categories found

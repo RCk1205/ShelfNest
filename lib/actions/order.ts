@@ -8,70 +8,162 @@ export async function createOrder(formData: {
   customerPhone: string;
   address: string;
 
+  userId?: string;
+
+  paymentMethod:
+    | "COD"
+    | "UPI"
+    | "CARD"
+    | "NET_BANKING";
+
+  paymentStatus?:
+    | "PENDING"
+    | "PAID"
+    | "FAILED";
+
+  razorpayOrderId?: string;
+  razorpayPaymentId?: string;
+  razorpaySignature?: string;
+
+  discount?: number;
+
   items: {
     bookId: string;
     quantity: number;
     price: number;
   }[];
 }) {
-  const subtotal = formData.items.reduce(
-    (sum, item) =>
-      sum + item.price * item.quantity,
-    0
-  );
 
-  const orderNumber =
-    "ORD-" + Date.now();
+  return await prisma.$transaction(async (tx) => {
 
-  const order =
-    await prisma.order.create({
-      data: {
-        orderNumber,
+    const subtotal = formData.items.reduce(
+      (sum, item) =>
+        sum + item.price * item.quantity,
+      0
+    );
 
-        customerName:
-          formData.customerName,
+    const total =
+      subtotal *
+      (100 - (formData.discount || 0)) /
+      100;
 
-        customerEmail:
-          formData.customerEmail,
+ const orderNumber =
+  `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
-        customerPhone:
-          formData.customerPhone,
+    // Validate stock
+    for (const item of formData.items) {
 
-        address:
-          formData.address,
+      const book =
+        await tx.book.findUnique({
+          where: {
+            id: item.bookId,
+          },
+        });
 
-        subtotal,
-        shipping: 0,
-        total: subtotal,
+      if (!book) {
+        throw new Error(
+          "Book not found"
+        );
+      }
 
-        items: {
-          create: formData.items.map(
-            (item) => ({
-              bookId: item.bookId,
-              quantity: item.quantity,
-              price: item.price,
-            })
-          ),
+      if (book.stock < item.quantity) {
+        throw new Error(
+          `${book.title} has only ${book.stock} copies left`
+        );
+      }
+
+    }
+
+    // Create order
+    const order =
+      await tx.order.create({
+
+        data: {
+
+          orderNumber,
+
+          customerName:
+            formData.customerName,
+
+          customerEmail:
+            formData.customerEmail,
+
+          customerPhone:
+            formData.customerPhone,
+
+          address:
+            formData.address,
+
+          userId:
+            formData.userId || null,
+
+          subtotal,
+
+          shipping: 0,
+
+          total,
+
+          paymentMethod:
+            formData.paymentMethod,
+
+          paymentStatus:
+            formData.paymentStatus ??
+            "PENDING",
+
+          razorpayOrderId:
+            formData.razorpayOrderId,
+
+          razorpayPaymentId:
+            formData.razorpayPaymentId,
+
+          razorpaySignature:
+            formData.razorpaySignature,
+
+          items: {
+
+            create:
+              formData.items.map(
+                (item) => ({
+                  bookId:
+                    item.bookId,
+                  quantity:
+                    item.quantity,
+                  price:
+                    item.price,
+                })
+              ),
+
+          },
+
         },
-      },
-    });
 
-  for (const item of formData.items) {
-    await prisma.book.update({
-      where: {
-        id: item.bookId,
-      },
-      data: {
-        stock: {
-          decrement: item.quantity,
+      });
+
+    // Reduce stock
+    for (const item of formData.items) {
+
+      await tx.book.update({
+
+        where: {
+          id: item.bookId,
         },
-      },
-    });
-  }
 
-  return order;
+        data: {
+          stock: {
+            decrement:
+              item.quantity,
+          },
+        },
+
+      });
+
+    }
+
+    return order;
+
+  });
+
 }
-
 export async function getOrders() {
   return prisma.order.findMany({
     orderBy: {
@@ -112,6 +204,22 @@ export async function updateOrderStatus(
     },
     data: {
       orderStatus,
+    },
+  });
+}
+export async function updatePaymentStatus(
+  id: string,
+  paymentStatus:
+    | "PENDING"
+    | "PAID"
+    | "FAILED"
+) {
+  return prisma.order.update({
+    where: {
+      id,
+    },
+    data: {
+      paymentStatus,
     },
   });
 }

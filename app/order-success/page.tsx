@@ -1,19 +1,28 @@
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+
 export default function OrderSuccessPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F8FBFD]">
+    <>
+      <Navbar />
 
-      <div className="bg-white rounded-xl border p-10 text-center">
+      <div className="min-h-screen flex items-center justify-center bg-[#F8FBFD]">
 
-        <h1 className="text-4xl font-bold text-green-600 mb-4">
-          Order Placed
-        </h1>
+        <div className="bg-white rounded-xl border p-10 text-center">
 
-        <p className="text-gray-600">
-          Thank you for your purchase.
-        </p>
+          <h1 className="text-4xl font-bold text-green-600 mb-4">
+            Order Placed
+          </h1>
+
+          <p className="text-gray-600">
+            Thank you for your purchase.
+          </p>
+
+        </div>
 
       </div>
 
-    </div>
+      <Footer />
+    </>
   );
 }

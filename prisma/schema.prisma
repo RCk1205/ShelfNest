@@ -9,6 +9,7 @@ datasource db {
 
 enum UserRole {
   ADMIN
+  CUSTOMER
 }
 
 enum OrderStatus {
@@ -24,13 +25,24 @@ enum PaymentStatus {
   PAID
   FAILED
 }
+enum PaymentMethod {
+  COD
+  UPI
+  CARD
+  NET_BANKING
+}
 
 model User {
   id        String   @id @default(cuid())
   name      String
   email     String   @unique
   password  String
-  role      UserRole @default(ADMIN)
+  role      UserRole @default(CUSTOMER)
+
+orders Order[]
+
+wishlists Wishlist[]
+reviews Review[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -83,13 +95,16 @@ model Book {
   category      Category @relation(fields: [categoryId], references: [id])
 
   orderItems    OrderItem[]
+  wishlists Wishlist[]
+reviews Review[]
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
 model Order {
   id             String @id @default(cuid())
-
+userId String?
+user   User? @relation(fields: [userId], references: [id])
   orderNumber    String @unique
 
   customerName   String
@@ -102,13 +117,20 @@ model Order {
   shipping       Float @default(0)
   total          Float
 
-  paymentStatus  PaymentStatus @default(PENDING)
+
   orderStatus    OrderStatus @default(PENDING)
+paymentStatus  PaymentStatus @default(PENDING)
+paymentMethod  PaymentMethod @default(COD)
 
-  items          OrderItem[]
+razorpayOrderId   String?
+razorpayPaymentId String?
+razorpaySignature String?
 
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+items          OrderItem[]
+
+createdAt      DateTime @default(now())
+updatedAt      DateTime @updatedAt
+
 }
 
 model OrderItem {
@@ -138,7 +160,57 @@ model StoreSettings {
   address     String? @db.Text
 
   bannerImage String?
+enableCOD         Boolean @default(true)
+enableUPI         Boolean @default(false)
+enableCard        Boolean @default(false)
+enableNetBanking  Boolean @default(false)
 
+razorpayEnabled   Boolean @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+model Wishlist {
+  id        String   @id @default(cuid())
+
+  userId    String
+  bookId    String
+
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book      Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, bookId])
+}
+
+model Review {
+  id        String   @id @default(cuid())
+
+  rating    Int
+
+  comment   String   @db.Text
+
+  userId    String
+  bookId    String
+
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book      Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, bookId])
+}
+
+model Coupon {
+  id          String   @id @default(cuid())
+
+  code        String   @unique
+
+  discount    Int
+
+  active      Boolean  @default(true)
+
+  expiryDate  DateTime?
+
+  createdAt   DateTime @default(now())
 }

@@ -23,7 +23,7 @@ export default async function BooksPage() {
 
           <Link
             href="/admin/books/new"
-            className="px-4 py-2 rounded-lg bg-[#447F98] hover:bg-[#2F657C] text-white hover:bg-[#447F98]"
+            className="px-4 py-2 rounded-lg bg-[#447F98] hover:bg-[#2F657C] text-white"
           >
             Add Book
           </Link>

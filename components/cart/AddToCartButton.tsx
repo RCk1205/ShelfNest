@@ -13,6 +13,17 @@ export default function AddToCartButton({
   const [added, setAdded] =
     useState(false);
 
+  if (book.stock <= 0) {
+    return (
+      <button
+        disabled
+        className="px-8 py-3 rounded-lg bg-gray-400 text-white cursor-not-allowed"
+      >
+        Out Of Stock
+      </button>
+    );
+  }
+
   return (
     <button
       onClick={() => {
@@ -28,7 +39,7 @@ export default function AddToCartButton({
       ${
         added
           ? "bg-green-600"
-          : "bg-[#447F98] hover:bg-[#2F657C] hover:bg-[#447F98]"
+          : "bg-[#447F98] hover:bg-[#2F657C]"
       }`}
     >
       {added

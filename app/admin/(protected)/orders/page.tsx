@@ -48,6 +48,13 @@ export default async function OrdersPage() {
                 <th className="text-left p-4">
                   Action
                 </th>
+                <th className="text-left p-4">
+  Payment Method
+</th>
+
+<th className="text-left p-4">
+  Payment Status
+</th>
 
               </tr>
 
@@ -63,8 +70,13 @@ export default async function OrdersPage() {
                   >
 
                     <td className="p-4">
-                      {order.orderNumber}
-                    </td>
+  <Link
+    href={`/admin/orders/${order.id}`}
+    className="text-[#447F98] font-medium hover:underline"
+  >
+    {order.orderNumber}
+  </Link>
+</td>
 
                     <td className="p-4">
                       {
@@ -75,12 +87,26 @@ export default async function OrdersPage() {
                     <td className="p-4">
                       ₹{order.total}
                     </td>
+<td className="p-4">
 
-                    <td className="p-4">
-                      {
-                        order.orderStatus
-                      }
-                    </td>
+  <span
+    className={`px-3 py-1 rounded-full text-sm font-medium
+    ${
+      order.orderStatus === "PENDING"
+        ? "bg-yellow-100 text-yellow-800"
+        : order.orderStatus === "PROCESSING"
+        ? "bg-blue-100 text-blue-800"
+        : order.orderStatus === "SHIPPED"
+        ? "bg-purple-100 text-purple-800"
+        : order.orderStatus === "DELIVERED"
+        ? "bg-green-100 text-green-800"
+        : "bg-red-100 text-red-800"
+    }`}
+  >
+    {order.orderStatus}
+  </span>
+
+</td>
 
                     <td className="p-4">
 
@@ -92,8 +118,27 @@ export default async function OrdersPage() {
                       </Link>
 
                     </td>
+                    <td className="p-4">
+  {order.paymentMethod}
+</td>
+
+<td className="p-4">
+  <span
+    className={`px-3 py-1 rounded-full text-sm font-medium
+    ${
+      order.paymentStatus === "PAID"
+        ? "bg-green-100 text-green-800"
+        : order.paymentStatus === "FAILED"
+        ? "bg-red-100 text-red-800"
+        : "bg-yellow-100 text-yellow-800"
+    }`}
+  >
+    {order.paymentStatus}
+  </span>
+</td>
 
                   </tr>
+                  
                 )
               )}
 

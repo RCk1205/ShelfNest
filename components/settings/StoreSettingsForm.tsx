@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { saveStoreSettings } from "@/lib/actions/store";
 import ImageUpload from "@/components/ImageUpload";
+import { toast } from "sonner";
 
 export default function StoreSettingsForm({
   settings,
@@ -26,22 +27,84 @@ export default function StoreSettingsForm({
 
   const [bannerImage, setBannerImage] =
     useState(settings?.bannerImage || "");
+    const [enableCOD, setEnableCOD] =
+  useState(settings?.enableCOD ?? true);
+
+const [enableUPI, setEnableUPI] =
+  useState(settings?.enableUPI ?? false);
+
+const [enableCard, setEnableCard] =
+  useState(settings?.enableCard ?? false);
+
+const [enableNetBanking, setEnableNetBanking] =
+  useState(settings?.enableNetBanking ?? false);
+
+const [razorpayEnabled, setRazorpayEnabled] =
+  useState(settings?.razorpayEnabled ?? false);
+
+const [isSubmitting, setIsSubmitting] =
+  useState(false);
+
+  
 
   async function handleSubmit(
     e: React.FormEvent<HTMLFormElement>
   ) {
     e.preventDefault();
 
-    await saveStoreSettings({
-      storeName,
-      email,
-      phone,
-      address,
-      logo,
-      bannerImage,
-    });
+if (isSubmitting) {
+  return;
+}
 
-    alert("Settings Saved");
+setIsSubmitting(true);
+if (
+  !enableCOD &&
+  !enableUPI &&
+  !enableCard &&
+  !enableNetBanking
+) {
+
+  toast.error(
+    "At least one payment method must be enabled."
+  );
+
+  setIsSubmitting(false);
+
+  return;
+}
+
+  try {
+
+  await saveStoreSettings({
+    storeName,
+    email,
+    phone,
+    address,
+    logo,
+    bannerImage,
+
+    enableCOD,
+    enableUPI,
+    enableCard,
+    enableNetBanking,
+    razorpayEnabled,
+  });
+
+  toast.success(
+    "Settings saved successfully."
+  );
+
+} catch {
+
+  toast.error(
+    "Unable to save settings."
+  );
+
+} finally {
+
+  setIsSubmitting(false);
+
+}
   }
 
   return (
@@ -107,13 +170,85 @@ export default function StoreSettingsForm({
           onChange={setBannerImage}
         />
       </div>
+<div className="border-t pt-6">
 
+  <h2 className="text-xl font-semibold mb-4">
+    Payment Settings
+  </h2>
+
+  <div className="space-y-4">
+
+    <label className="flex items-center gap-3">
+      <input
+        type="checkbox"
+        checked={enableCOD}
+        onChange={(e) =>
+          setEnableCOD(e.target.checked)
+        }
+      />
+      Cash On Delivery
+    </label>
+
+    <label className="flex items-center gap-3">
+      <input
+        type="checkbox"
+        checked={enableUPI}
+        onChange={(e) =>
+          setEnableUPI(e.target.checked)
+        }
+      />
+      UPI
+    </label>
+
+    <label className="flex items-center gap-3">
+      <input
+        type="checkbox"
+        checked={enableCard}
+        onChange={(e) =>
+          setEnableCard(e.target.checked)
+        }
+      />
+      Credit / Debit Card
+    </label>
+
+    <label className="flex items-center gap-3">
+      <input
+        type="checkbox"
+        checked={enableNetBanking}
+        onChange={(e) =>
+          setEnableNetBanking(
+            e.target.checked
+          )
+        }
+      />
+      Net Banking
+    </label>
+
+    <label className="flex items-center gap-3">
+      <input
+        type="checkbox"
+        checked={razorpayEnabled}
+        onChange={(e) =>
+          setRazorpayEnabled(
+            e.target.checked
+          )
+        }
+      />
+      Razorpay Enabled
+    </label>
+
+  </div>
+
+</div>
       <button
-        type="submit"
-        className="px-6 py-3 rounded-lg bg-[#447F98] hover:bg-[#2F657C] text-white"
-      >
-        Save Settings
-      </button>
+  type="submit"
+  disabled={isSubmitting}
+  className="px-6 py-3 rounded-lg bg-[#447F98] hover:bg-[#2F657C] text-white disabled:opacity-60 disabled:cursor-not-allowed"
+>
+  {isSubmitting
+    ? "Saving..."
+    : "Save Settings"}
+</button>
     </form>
   );
 }
