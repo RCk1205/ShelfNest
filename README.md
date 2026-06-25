@@ -1,82 +1,84 @@
 # 📚 ShelfNest
 
-A modern full-stack bookstore management system built with **Next.js**, **TypeScript**, **Prisma**, and **MySQL**.
+> A full-stack bookstore management system built with **Next.js**, **TypeScript**, **Prisma**, and **MySQL**.
 
-ShelfNest is a commercial-style web application that enables customers to browse and purchase books while providing administrators with a complete inventory, order, coupon, and store management dashboard.
+ShelfNest is a modern bookstore application that provides customers with a seamless online shopping experience while offering administrators a centralized dashboard for managing books, categories, orders, coupons, inventory, and store settings.
 
 ---
 
-## 🚀 Features
+# ✨ Features
 
-### Customer Features
+## Customer Features
 
-* User Registration & Login
-* Secure Authentication (NextAuth)
-* Browse Books
-* Category Filtering
+* Secure User Authentication
+* Browse Books by Category
 * Search Books
-* Book Details
-* Related Books
+* Book Detail Pages
+* Related Book Suggestions
 * Shopping Cart
 * Wishlist
-* Product Reviews & Ratings
-* Coupon System
-* Checkout
+* Customer Reviews & Ratings
+* Coupon Code Support
 * Cash on Delivery (COD)
-* Razorpay Payment Gateway
+* Razorpay Online Payments
 * Order History
-* Responsive Design
+* Responsive User Interface
 
 ---
 
-### Admin Features
+## Admin Features
 
-* Admin Dashboard
-* Book Management (CRUD)
-* Category Management (CRUD)
+* Secure Admin Login
+* Dashboard Overview
+* Book Management (Create, Update, Delete)
+* Category Management
 * Order Management
 * Coupon Management
-* Store Settings
-* Payment Settings
-* Inventory Management
-* Low Stock Monitoring
+* Store Configuration
+* Payment Method Configuration
+* Inventory & Stock Management
 
 ---
 
-## 💳 Payment Support
+# 💳 Payment Integration
+
+ShelfNest supports multiple payment methods:
 
 * Cash on Delivery
-* Razorpay Integration
-* Secure Payment Verification
-* Payment Status Tracking
+* Razorpay
+* UPI
+* Credit / Debit Card
+* Net Banking
+
+Payment verification is handled securely before order confirmation.
 
 ---
 
-## 🛠 Tech Stack
+# 🛠 Technology Stack
 
-### Frontend
+## Frontend
 
 * Next.js 16
 * React
 * TypeScript
 * Tailwind CSS
 
-### Backend
+## Backend
 
 * Next.js Server Actions
-* NextAuth
+* NextAuth.js
 * Prisma ORM
 
-### Database
+## Database
 
 * MySQL
 
-### Cloud Services
+## Cloud Services
 
 * Cloudinary
 * Razorpay
 
-### Other Libraries
+## Libraries
 
 * Zod
 * Sonner
@@ -84,9 +86,9 @@ ShelfNest is a commercial-style web application that enables customers to browse
 
 ---
 
-## 📂 Project Structure
+# 📂 Project Structure
 
-```
+```text
 app/
 components/
 lib/
@@ -96,47 +98,33 @@ public/
 
 ---
 
-## ⚙️ Installation
+# 🚀 Getting Started
 
-Clone the repository
+## Clone the repository
 
 ```bash
 git clone https://github.com/RCk1205/ShelfNest.git
 ```
 
-Move into the project
+## Move into the project
 
 ```bash
 cd ShelfNest
 ```
 
-Install dependencies
+## Install dependencies
 
 ```bash
 npm install
 ```
 
-Create a `.env` file and configure the required environment variables.
+## Configure environment variables
 
-Run database migrations
+Create a `.env` file in the project root.
 
-```bash
-npx prisma migrate dev
-```
+Example:
 
-Start the development server
-
-```bash
-npm run dev
-```
-
----
-
-## 🔐 Environment Variables
-
-Create a `.env` file containing:
-
-```
+```env
 DATABASE_URL=
 
 NEXTAUTH_SECRET=
@@ -156,47 +144,79 @@ NEXT_PUBLIC_RAZORPAY_KEY_ID=
 
 ---
 
-## 📸 Screenshots
+## Run Prisma Migration
 
-You can add screenshots inside:
-
+```bash
+npx prisma migrate dev
 ```
-public/screenshots/
-```
-
-Example:
-
-* Home Page
-* Book Details
-* Shopping Cart
-* Checkout
-* Admin Dashboard
-* Orders
-* Coupons
 
 ---
 
-## Future Improvements
+## Start Development Server
 
-* Skeleton Loading
-* SEO Optimization
-* Analytics Dashboard
+```bash
+npm run dev
+```
+
+---
+
+# 📦 Production Build
+
+```bash
+npm run build
+```
+
+---
+
+# 🔒 Security Highlights
+
+* Authentication using NextAuth.js
+* Server-side data validation
+* Prisma ORM for database safety
+* Transaction-based order creation
+* Secure Razorpay payment verification
+* Input validation on customer and admin forms
+
+---
+
+# 📋 Core Modules
+
+* Authentication
+* Books
+* Categories
+* Search
+* Cart
+* Wishlist
+* Reviews
+* Coupons
+* Checkout
+* Orders
+* Admin Dashboard
+* Store Settings
+* Payment Settings
+
+---
+
+# 📈 Future Improvements
+
+* Email Notifications
+* Sales Analytics Dashboard
+* Inventory Reports
+* Product Recommendations
+* SEO Enhancements
 * Accessibility Improvements
 * Performance Optimization
-* Email Notifications
 
 ---
 
-## License
-
-This project is for educational and portfolio purposes.
-
----
-
-## Author
+# 👨‍💻 Developer
 
 **Rahul Chourasia**
 
-GitHub
+GitHub: https://github.com/RCk1205
 
-https://github.com/RCk1205
+---
+
+# 📄 License
+
+This project is intended for educational, portfolio, and demonstration purposes.
