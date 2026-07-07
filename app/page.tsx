@@ -9,19 +9,17 @@ import {
   getBestSellerBooks,
 } from "@/lib/actions/public";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
-  const featuredBooks =
-    await getFeaturedBooks();
-
-  const bestSellerBooks =
-    await getBestSellerBooks();
-
-  const latestBooks =
-    await getLatestBooks();
+  const [featuredBooks, bestSellerBooks, latestBooks] = await Promise.all([
+    getFeaturedBooks(),
+    getBestSellerBooks(),
+    getLatestBooks(),
+  ]);
 
   return (
     <div className="min-h-screen bg-[#F8FBFD]">
-
       <Navbar />
 
       <Hero />
@@ -42,7 +40,6 @@ export default async function Home() {
       />
 
       <Footer />
-
     </div>
   );
 }
