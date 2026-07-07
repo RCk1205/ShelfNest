@@ -151,6 +151,20 @@ export async function searchBooks(search: string) {
             mode: "insensitive",
           },
         },
+        {
+          description: {
+            contains: query,
+            mode: "insensitive",
+          },
+        },
+        {
+          category: {
+            name: {
+              contains: query,
+              mode: "insensitive",
+            },
+          },
+        },
       ],
     },
     include: {
